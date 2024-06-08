@@ -13,7 +13,7 @@ const getBillingInfo = async (req, res) => {
 const generateInvoice = async (req, res) => {
   try {
     console.log(req.body);
-    const emailId = "kb6789123@gmail.com";
+    const emailId = req.body.email;
     const amount = req.body.amount; // Example amount, replace with actual calculation
     const invoiceId = 'INV-12345';
     const date = new Date().toISOString();
@@ -28,16 +28,12 @@ const generateInvoice = async (req, res) => {
     };
 
     // Call the Zapier webhook
-    const zapierResponse = await axios.post(ZAPIER_WEBHOOK_URL,payload);
+    const zapierResponse = await axios.post(process.env.ZAPIER_WEBHOOK_URL,payload);
 
     // Log the response from Zapier
     console.log('Zapier response:', zapierResponse.data);
 
-    res.status(200).json({
-      invoiceId: 'INV-12345',
-      amount: '$150.00',
-      date: new Date()
-    });
+    res.status(200).json();
   } catch (error) {
     console.error('Error generating invoice', error.response ? error.response.data : error.message);
     res.status(500).json({ message: 'Server error' });
